@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  wealthiq-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wealthiq_fullstack
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - JWT_SECRET=wealthiq-docker-secret-2026
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - wealthiq_data:/app/data
+    restart: unless-stopped
+
+  wealthiq-ml:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: wealthiq_ml_service
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+volumes:
+  wealthiq_data:
